@@ -43,7 +43,6 @@ $.fn.serializeObject = function() {
     var Settings = Toastr.settings = {
         timeout: 10000, // default timeout
         theme: 'light', // dark
-        color:"#FFFFFF",
         icon: 'fas fa-bell',
         resetOnHover: true,
         progressBarColor: 'rgb(0, 0, 0)',
@@ -54,18 +53,29 @@ $.fn.serializeObject = function() {
         consume:1,
         consume_delay:1500,
         consume_max:5,
-        autoconsume:true
+        autoconsume:true,
+
+        colors : {
+            default: "#FFFFFF",
+            error  : "red",
+            info   : "blue",
+            warning: "orange",
+            success: "green"
+        }
     };
 
-    var debug = true;
+    var debug = false;
     var ready = false;
-    Toastr.ready = function (toasterId = "#toaster", options = {}) {
+    Toastr.ready = function (options = {}, toasterId = "#toaster") {
+
+        if("debug" in options)
+            debug = options["debug"];
 
         Toastr.configure(options);
-
-        dispatchEvent(new Event('toastr:ready'));
-        if(debug) console.log("Toastr is ready.");
         ready = true;
+
+        if(debug) console.log("Toastr is ready.");
+        dispatchEvent(new Event('toastr:ready'));
 
         if (Toastr.get("autoconsume"))
             Toastr.consume();
@@ -126,12 +136,6 @@ $.fn.serializeObject = function() {
         return this;
     };
 
-    Toastr.onLoad = function() {
-
-        if(debug) console.log("Toastr loading.");
-        Toastr.extract();
-    }
-
     Toastr.extract = function(toasterId = "#toaster", callback = undefined) {
 
         $(toasterId).each(function() {
@@ -151,11 +155,13 @@ $.fn.serializeObject = function() {
                 var type = undefined;
                 if($(this).hasClass("alert-warning")) type = "warning";
                 if($(this).hasClass("alert-success")) type = "success";
-                if($(this).hasClass("alert-danger" )) type = "error";
+                if($(this).hasClass("alert-danger" )) type = "danger";
+                if($(this).hasClass("alert-error" )) type = "error";
                 if($(this).hasClass("alert-info" )) type = "info";
                 if(type) options = Object.assign({}, options, {type: type});
 
                 Toastr.add(title, message, options);
+                console.log(this);
                 this.remove();
             });
         });
@@ -220,11 +226,26 @@ $.fn.serializeObject = function() {
 
             if(toast) {
 
-                if(toast.type == "success") iziToast.success(toast);
-                else if(toast.type == "error" ) iziToast.error(toast);
-                else if(toast.type == "warning") iziToast.warning(toast);
-                else if(toast.type == "custom") iziToast.custom(toast);
-                else iziToast.info(toast);
+                if(!("color" in toast))
+                    toast["color"] = Toastr.settings.colors[toast.type] || Toastr.settings.colors["default"];
+
+                switch(toast.type) {
+                    case "success": 
+                        iziToast.success(toast);
+                    break;
+                    case "info": 
+                        iziToast.info(toast);
+                    break;
+                    case "danger": 
+                    case "error": 
+                        iziToast.error(toast);
+                    break;
+                    case "warning": 
+                        iziToast.warning(toast);
+                    break;
+                    default:
+                        iziToast.show(toast);;
+                }
 
                 delete Toastr.dict[key];
             }
@@ -236,7 +257,11 @@ $.fn.serializeObject = function() {
         }
     }
 
-    Toastr.onLoad();
+    Toastr.onLoad = function() { Toastr.extract(); }
+
+    $(document).ready(function() {
+        Toastr.onLoad();
+    });
 
     return Toastr;
 });
