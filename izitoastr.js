@@ -41,10 +41,12 @@ $.fn.serializeObject = function() {
     var Interval = Toastr.interval = undefined;
 
     var Settings = Toastr.settings = {
+
         timeout: 10000, // default timeout
         theme: 'light', // dark
         icon: 'fas fa-bell',
         resetOnHover: true,
+        closeOnClick: true,
         progressBarColor: 'rgb(0, 0, 0)',
         transitionIn: 'flipInX',
         transitionOut: 'flipOutX',
@@ -77,6 +79,7 @@ $.fn.serializeObject = function() {
         if(debug) console.log("Toastr is ready.");
         dispatchEvent(new Event('toastr:ready'));
 
+        Toastr.extract();
         if (Toastr.get("autoconsume"))
             Toastr.consume();
 
@@ -130,9 +133,11 @@ $.fn.serializeObject = function() {
             if (value !== undefined && options.hasOwnProperty(key)) Settings[key] = value;
         }
 
-        iziToast.settings(Settings);
-        if(debug) console.log("Toastr configuration: ", Settings);
+        if(debug) Settings["timeout"] = undefined;
 
+        if(debug) console.log("Toastr configuration: ", Settings);
+        iziToast.settings(Settings);
+        
         return this;
     };
 
@@ -147,22 +152,23 @@ $.fn.serializeObject = function() {
 
                 var options = $(this).data();
                 var title = $(this).find(".title");
-                    title = (title.length ? title[0].textContent : undefined);
+                    title = (title.length ? title[0].innerText : undefined);
 
                 var message = $(this).find(".message");
-                    message = (message.length ? message[0].textContent : undefined);
+                    message = (message.length ? message[0].innerText : undefined);
+                    message = message || this.innerText;
 
                 var type = undefined;
                 if($(this).hasClass("alert-warning")) type = "warning";
                 if($(this).hasClass("alert-success")) type = "success";
-                if($(this).hasClass("alert-danger" )) type = "danger";
+                if($(this).hasClass("alert-danger" )) type = "error";
                 if($(this).hasClass("alert-error" )) type = "error";
                 if($(this).hasClass("alert-info" )) type = "info";
                 if(type) options = Object.assign({}, options, {type: type});
 
-                Toastr.add(title, message, options);
-                console.log(this);
                 this.remove();
+
+                Toastr.add(title, message, options);
             });
         });
     }
@@ -185,6 +191,8 @@ $.fn.serializeObject = function() {
             message: message || ""
         });
 
+        Toastr.extract();
+        
         if (Toastr.isReady() && Toastr.get("autoconsume"))
             Toastr.consume();
     }
@@ -236,7 +244,6 @@ $.fn.serializeObject = function() {
                     case "info": 
                         iziToast.info(toast);
                     break;
-                    case "danger": 
                     case "error": 
                         iziToast.error(toast);
                     break;
@@ -256,12 +263,6 @@ $.fn.serializeObject = function() {
             _atomic();
         }
     }
-
-    Toastr.onLoad = function() { Toastr.extract(); }
-
-    $(document).ready(function() {
-        Toastr.onLoad();
-    });
 
     return Toastr;
 });
