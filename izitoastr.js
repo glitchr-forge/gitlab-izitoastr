@@ -40,11 +40,11 @@ $.fn.serializeObject = function() {
     var DictTimeout = Toastr.dictTimeout = {};
     var Interval = Toastr.interval = undefined;
 
+    var Mutex = Toastr.mutex = {extract:false, consume:false};
+
     var Settings = Toastr.settings = {
 
-        timeout: 10000, // default timeout
         theme: 'light', // dark
-        icon: 'fas fa-bell',
         resetOnHover: true,
         closeOnClick: true,
         progressBarColor: 'rgb(0, 0, 0)',
@@ -63,6 +63,22 @@ $.fn.serializeObject = function() {
             info   : "blue",
             warning: "orange",
             success: "green"
+        },
+
+        timeout: {
+            default: 10000,
+            error  : undefined,
+            info   : 10000,
+            warning: 10000,
+            success: 10000
+        }, 
+
+        icons: {
+            default: 'fas fa-bell',
+            error  : "fas fa-skull-crossbones",
+            info   : "fas fa-info-circle",
+            warning: "fas fa-exclamation-triangle",
+            success: "fas fa-clipboard-check"
         }
     };
 
@@ -133,7 +149,7 @@ $.fn.serializeObject = function() {
             if (value !== undefined && options.hasOwnProperty(key)) Settings[key] = value;
         }
 
-        if(debug) Settings["timeout"] = undefined;
+        // if(debug) Settings["timeout"] = undefined;
 
         if(debug) console.log("Toastr configuration: ", Settings);
         iziToast.settings(Settings);
@@ -143,11 +159,13 @@ $.fn.serializeObject = function() {
 
     Toastr.extract = function(toasterId = "#toaster", callback = undefined) {
 
+        if(Toastr.mutex.extract) return;
+        Toastr.mutex.extract = true;
+
         $(toasterId).each(function() {
 
             var toasterElement  = $("#" + $(this).data("toaster-proxy-id")) || this;
             var toasterChildren = toasterElement.children();
-
             $(toasterChildren).each(callback || function() {
 
                 var options = $(this).data();
@@ -171,6 +189,8 @@ $.fn.serializeObject = function() {
                 Toastr.add(title, message, options);
             });
         });
+
+        Toastr.mutex.extract = false;
     }
 
     Toastr.uuidv4 = function() {
@@ -193,11 +213,14 @@ $.fn.serializeObject = function() {
 
         Toastr.extract();
         
-        if (Toastr.isReady() && Toastr.get("autoconsume"))
+        if (Toastr.isReady() && Toastr.get("autoconsume") && !Toastr.mutex.extract)
             Toastr.consume();
     }
     
     Toastr.consume = function(consume = undefined, consume_delay = undefined, consume_max = undefined) {
+
+        if(Toastr.mutex.consume) return;
+        Toastr.mutex.consume = true;
 
         consume = consume || Toastr.get("consume");
         consume_delay = consume_delay || Toastr.get("consume_delay");
@@ -220,22 +243,21 @@ $.fn.serializeObject = function() {
             if(Toastr.dictTimeout.length >= consume_max) return;
 
             var keys = Object.keys(Toastr.dict);
-            if (keys.length < 1) {
-                clearInterval(Toastr.interval);
-                Toastr.interval = undefined;
-                return;
-            }
+            if (keys.length < 1) return;
 
             var key = Object.keys(Toastr.dict)[0];
             var toast = Toastr.dict[key];
-
-            var timeout = Toastr.get("timeout") || 0;
-            Toastr.dictTimeout[key] = toast["timeout"] || timeout;
-
             if(toast) {
 
+                var type = toast.type || "default";
+                if(!("icon" in toast))
+                    toast["icon"]    = Toastr.get("icons")[type] || undefined;
+                if(!("timeout" in toast))
+                    toast["timeout"] = Toastr.get("timeout")[type] || 0;
                 if(!("color" in toast))
-                    toast["color"] = Toastr.settings.colors[toast.type] || Toastr.settings.colors["default"];
+                    toast["color"] = Toastr.get("colors")[type];
+
+                Toastr.dictTimeout[key] = toast["timeout"];
 
                 switch(toast.type) {
                     case "success": 
@@ -251,10 +273,20 @@ $.fn.serializeObject = function() {
                         iziToast.warning(toast);
                     break;
                     default:
-                        iziToast.show(toast);;
+                        iziToast.show(toast);
                 }
 
                 delete Toastr.dict[key];
+            }
+
+            var keys = Object.keys(Toastr.dict);
+            if (keys.length < 1) {
+                clearInterval(Toastr.interval);
+                Toastr.interval = undefined;
+               
+                Toastr.mutex.consume = false;
+
+                return;
             }
         }
 
