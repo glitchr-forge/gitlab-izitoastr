@@ -46,7 +46,7 @@ $.fn.serializeObject = function() {
 
         theme: 'light', // dark
         resetOnHover: true,
-        closeOnClick: true,
+        closeOnClick: false,
         progressBarColor: 'rgb(0, 0, 0)',
         transitionIn: 'flipInX',
         transitionOut: 'flipOutX',
@@ -69,15 +69,15 @@ $.fn.serializeObject = function() {
             default: 10000,
             error  : undefined,
             info   : 10000,
-            warning: 10000,
+            warning: undefined,
             success: 10000
         }, 
 
         icons: {
             default: 'fas fa-bell',
-            error  : "fas fa-skull-crossbones",
+            error  : "fas fa-exclamation-triangle",
             info   : "fas fa-info-circle",
-            warning: "fas fa-exclamation-triangle",
+            warning: "fas fa-exclamation-circle",
             success: "fas fa-clipboard-check"
         }
     };
@@ -149,8 +149,6 @@ $.fn.serializeObject = function() {
             if (value !== undefined && options.hasOwnProperty(key)) Settings[key] = value;
         }
 
-        // if(debug) Settings["timeout"] = undefined;
-
         if(debug) console.log("Toastr configuration: ", Settings);
         iziToast.settings(Settings);
         
@@ -170,11 +168,11 @@ $.fn.serializeObject = function() {
 
                 var options = $(this).data();
                 var title = $(this).find(".title");
-                    title = (title.length ? title[0].innerText : undefined);
+                    title = (title.length ? title[0].innerHTML.trim() : undefined);
 
                 var message = $(this).find(".message");
-                    message = (message.length ? message[0].innerText : undefined);
-                    message = message || this.innerText;
+                    message = (message.length ? message[0].innerHTML : undefined);
+                    message = message || this.innerHTML;
 
                 var type = undefined;
                 if($(this).hasClass("alert-warning")) type = "warning";
@@ -186,7 +184,7 @@ $.fn.serializeObject = function() {
 
                 this.remove();
 
-                Toastr.add(title, message, options);
+                Toastr.add(title, message.trim(), options);
             });
         });
 
