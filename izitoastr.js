@@ -74,11 +74,11 @@ $.fn.serializeObject = function() {
         }, 
 
         icons: {
-            default: 'fas fa-bell',
-            error  : "fas fa-exclamation-triangle",
-            info   : "fas fa-info-circle",
-            warning: "fas fa-exclamation-circle",
-            success: "fas fa-clipboard-check"
+            default: 'fas fa-fw fa-bell',
+            error  : "fas fa-fw fa-exclamation-triangle",
+            info   : "fas fa-fw fa-info-circle",
+            warning: "fas fa-fw fa-exclamation-circle",
+            success: "fas fa-fw fa-clipboard-check"
         }
     };
 
@@ -171,15 +171,15 @@ $.fn.serializeObject = function() {
                     title = (title.length ? title[0].innerHTML.trim() : undefined);
 
                 var message = $(this).find(".message");
-                    message = (message.length ? message[0].innerHTML : undefined);
+                    message = (message.length ? message[0].innerHTML.trim() : undefined);
                     message = message || this.innerHTML;
 
                 var type = undefined;
                 if($(this).hasClass("alert-warning")) type = "warning";
                 if($(this).hasClass("alert-success")) type = "success";
                 if($(this).hasClass("alert-danger" )) type = "error";
-                if($(this).hasClass("alert-error" )) type = "error";
-                if($(this).hasClass("alert-info" )) type = "info";
+                if($(this).hasClass("alert-error"  )) type = "error";
+                if($(this).hasClass("alert-info"   )) type = "info";
                 if(type) options = Object.assign({}, options, {type: type});
 
                 this.remove();
