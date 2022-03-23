@@ -150,8 +150,6 @@ $.fn.serializeObject = function() {
         }
 
         if(debug) console.log("Toastr configuration: ", Settings);
-        iziToast.settings(Settings);
-        
         return this;
     };
 
