@@ -202,10 +202,16 @@ $.fn.serializeObject = function() {
         var uuid = Toastr.uuidv4();
         var time = new Date();
 
-        Toastr.dict[uuid] = Object.assign({}, options, {
+        Toastr.dict[uuid] = Object.assign({}, {
             title: title || ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2), 
-            message: message || ""
-        });
+            message: message || "",
+            resetOnHover : Toastr.get("resetOnHover"),
+            closeOnClick : Toastr.get("closeOnClick"),
+            position     : Toastr.get("position"),
+            theme        : Toastr.get("theme"),
+            transitionIn : Toastr.get("transitionIn"),
+            transitionOut: Toastr.get("transitionOut")
+        }, options);
 
         Toastr.extract();
         
@@ -243,6 +249,7 @@ $.fn.serializeObject = function() {
 
             var key = Object.keys(Toastr.dict)[0];
             var toast = Toastr.dict[key];
+
             if(toast) {
 
                 var type = toast.type || "default";
