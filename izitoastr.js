@@ -71,7 +71,7 @@ $.fn.serializeObject = function() {
             info   : 10000,
             warning: undefined,
             success: 10000
-        }, 
+        },
 
         icons: {
             default: 'fas fa-fw fa-bell',
@@ -103,21 +103,21 @@ $.fn.serializeObject = function() {
     };
 
     Toastr.get = function(key) {
-    
-        if(key in Toastr.settings) 
+
+        if(key in Toastr.settings)
             return Toastr.settings[key];
 
         return null;
     };
 
     Toastr.set = function(key, value) {
-    
+
         Toastr.settings[key] = value;
         return this;
     };
 
     Toastr.add = function(key, value) {
-    
+
         if(! (key in Toastr.settings))
             Toastr.settings[key] = [];
 
@@ -128,16 +128,16 @@ $.fn.serializeObject = function() {
     };
 
     Toastr.remove = function(key, value) {
-    
+
         if(key in Toastr.settings) {
-        
-            Toastr.settings[key] = Toastr.settings[key].filter(function(setting, index, arr){ 
+
+            Toastr.settings[key] = Toastr.settings[key].filter(function(setting, index, arr){
                 return value != setting;
             });
 
             return Toastr.settings[key];
         }
-        
+
         return null;
     };
 
@@ -203,7 +203,7 @@ $.fn.serializeObject = function() {
         var time = new Date();
 
         Toastr.dict[uuid] = Object.assign({}, {
-            title: title || ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2), 
+            title: title || ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2),
             message: message || "",
             resetOnHover : Toastr.get("resetOnHover"),
             closeOnClick : Toastr.get("closeOnClick"),
@@ -214,11 +214,11 @@ $.fn.serializeObject = function() {
         }, options);
 
         Toastr.extract();
-        
+
         if (Toastr.isReady() && Toastr.get("autoconsume") && !Toastr.mutex.extract)
             Toastr.consume();
     }
-    
+
     Toastr.consume = function(consume = undefined, consume_delay = undefined, consume_max = undefined) {
 
         if(Toastr.mutex.consume) return;
@@ -227,7 +227,7 @@ $.fn.serializeObject = function() {
         consume = consume || Toastr.get("consume");
         consume_delay = consume_delay || Toastr.get("consume_delay");
         consume_max = consume_max || Toastr.get("consume_max");
-        
+
         if(debug) {
             var nToasts = Object.keys(Toastr.dict).length;
             if (nToasts) console.log("Toastr: " + nToasts + " toast(s) to consume");
@@ -237,7 +237,7 @@ $.fn.serializeObject = function() {
         function _atomic() {
 
             Object.entries(Toastr.dictTimeout).forEach(([uuid,timeout]) => {
-                
+
                 Toastr.dictTimeout[uuid] -= consume_delay;
                 if(Toastr.dictTimeout[uuid] < 0) delete Toastr.dictTimeout[uuid];
             });
@@ -263,16 +263,16 @@ $.fn.serializeObject = function() {
                 Toastr.dictTimeout[key] = toast["timeout"];
 
                 switch(toast.type) {
-                    case "success": 
+                    case "success":
                         iziToast.success(toast);
                     break;
-                    case "info": 
+                    case "info":
                         iziToast.info(toast);
                     break;
-                    case "error": 
+                    case "error":
                         iziToast.error(toast);
                     break;
-                    case "warning": 
+                    case "warning":
                         iziToast.warning(toast);
                     break;
                     default:
@@ -286,7 +286,7 @@ $.fn.serializeObject = function() {
             if (keys.length < 1) {
                 clearInterval(Toastr.interval);
                 Toastr.interval = undefined;
-               
+
                 Toastr.mutex.consume = false;
 
                 return;
