@@ -89,6 +89,7 @@ $.fn.serializeObject = function() {
         if("debug" in options)
             debug = options["debug"];
 
+        iziToast.destroy();
         Toastr.configure(options);
         ready = true;
 
