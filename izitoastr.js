@@ -82,6 +82,7 @@ $.fn.serializeObject = function() {
         }
     };
 
+    var disable = false;
     var debug = false;
     var ready = false;
     Toastr.ready = function (options = {}, toasterId = "#toaster") {
@@ -229,11 +230,15 @@ $.fn.serializeObject = function() {
         consume_delay = consume_delay || Toastr.get("consume_delay");
         consume_max = consume_max || Toastr.get("consume_max");
 
+        if(disable && debug) console.log("Toastr is disabled");
+        if(disable) return;
+
         if(debug) {
             var nToasts = Object.keys(Toastr.dict).length;
             if (nToasts) console.log("Toastr: " + nToasts + " toast(s) to consume");
             else console.log("Toastr: nothing to consume");
         }
+
 
         function _atomic() {
 
