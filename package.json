@@ -1,0 +1,15 @@
+{
+  "name": "@glitchr/izitoastr",
+  "version": "1.0.4",
+  "description": "Izitoast Extension",
+  "main": "index.js",
+  "repository": {
+    "url": "ssh://git@gitlab.glitchr.dev:public-repository/javascript/izitoastr.git",
+    "type": "git"
+  },
+  "author": "Marco Meyer <marco.meyer@glitchr.io>",
+  "license": "LGPL-3.0-or-later",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
