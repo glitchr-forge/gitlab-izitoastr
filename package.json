@@ -1,13 +1,15 @@
 {
   "name": "@glitchr/izitoastr",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Izitoast Extension",
   "main": "index.js",
   "repository": {
     "url": "ssh://git@gitlab.glitchr.dev:public-repository/javascript/izitoastr.git",
     "type": "git"
   },
-  "dependencies": {"izitoast": "^1.4.0"},
+  "dependencies": {
+    "izitoast": "^1.4.0"
+  },
   "author": "Marco Meyer <marco.meyer@glitchr.io>",
   "license": "LGPL-3.0-or-later",
   "scripts": {
