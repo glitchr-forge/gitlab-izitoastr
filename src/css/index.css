@@ -1,6 +1,6 @@
-@import url("./izitoast/1.4.0/dist/css/iziToast.min.css");
+@import "izitoast/dist/css/iziToast.min.css";
 
-.iziToast > .iziToast-body .iziToast-icon 
+.iziToast > .iziToast-body .iziToast-icon
 {
     top: 19px;
 }
