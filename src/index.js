@@ -1,2 +1,2 @@
-import './js/izitoastr';
-import './css/index.scss';
+import './js/izitoastr.js';
+import './css/index.css';
