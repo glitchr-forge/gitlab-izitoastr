@@ -1,5 +1,3 @@
-import 'izitoast'
-
 $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -28,7 +26,7 @@ $.fn.serializeObject = function() {
 
 })(this, function () {
 
-    var Toastr = {};
+    var Toastr = window.Toastr = {};
         Toastr.version = '0.1.0';
 
     var Dict = Toastr.dict = {};
