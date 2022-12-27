@@ -1,6 +1,6 @@
 {
   "name": "@glitchr/izitoastr",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Izitoast Extension",
   "main": "src/index.js",
   "repository": {
