@@ -157,15 +157,18 @@ $.fn.serializeObject = function() {
 
             var toasterElement  = $("#" + $(this).data("toaster-proxy-id")) || this;
             var toasterChildren = toasterElement.children();
+
             $(toasterChildren).each(callback || function() {
 
                 var options = $(this).data();
                 var title = $(this).find(".title");
                     title = (title.length ? title[0].innerHTML.trim() : undefined);
+                    if(title) title = title.trim();
 
                 var message = $(this).find(".message");
                     message = (message.length ? message[0].innerHTML.trim() : undefined);
-                    message = message || this.innerHTML;
+                    if(!title) message = message || this.innerHTML;
+                    if(message) message = message.trim();
 
                 var type = undefined;
                 if($(this).hasClass("alert-warning")) type = "warning";
@@ -177,7 +180,7 @@ $.fn.serializeObject = function() {
 
                 this.remove();
 
-                Toastr.add(title, message.trim(), options);
+                Toastr.add(title, message, options);
             });
         });
 
