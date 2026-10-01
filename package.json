@@ -4,8 +4,8 @@
   "description": "Izitoast Extension",
   "main": "src/index.js",
   "repository": {
-    "url": "ssh://git@gitlab.glitchr.dev:public-repository/javascript/izitoastr.git",
-    "type": "git"
+    "type": "git",
+    "url": "git+https://github.com/glitchr-studio/izitoastr.git"
   },
   "dependencies": {
     "izitoast": "^1.4.0"
